@@ -80,18 +80,17 @@ def main() -> None:
     
     :return None:
     """
-    try:
-        root_jnt, mid_jnt, end_jnt = cmds.ls(selection=True, type="joint")
+    joints = cmds.ls(selection=True, type="joint")
     
-    except ValueError:
-        cmds.error("Select 3 joints")
-        
-    root = cmds.xform(root_jnt, query=True, rotatePivot=True, worldSpace=True)
-    mid = cmds.xform(mid_jnt, query=True, rotatePivot=True, worldSpace=True)
-    end = cmds.xform(end_jnt, query=True, rotatePivot=True, worldSpace=True)
+    if len(joints) != 3:
+        cmds.error("Select three joints")
     
-    pole_vector = get_pole_vec_pos(root, mid, end, 1)
-    place_locator(pole_vector)
+    positions = [
+        cmds.xform(jnt, query=True, rotatePivot=True, worldSpace=True) 
+        for jnt in joints
+    ] 
+   
+    place_locator(get_pole_vec_pos(*positions, 1))
 
 
 if __name__ == "__main__":
